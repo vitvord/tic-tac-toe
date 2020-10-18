@@ -2,7 +2,7 @@
 from functools import partial
 
 
-def play(field, winsize, step_count=0):
+def play(field: list, winsize: int, step_count: int = 0):
     print_state(field, step_count)
     player = 'o' if step_count % 2 else 'x'
 
@@ -11,7 +11,7 @@ def play(field, winsize, step_count=0):
     next_step(field, winsize, step_count, player, coordinate=(row, column))
 
 
-def next_step(field, winsize, step_count, player, coordinate=()):
+def next_step(field: list, winsize: int, step_count: int, player: str, coordinate: tuple = ()):
     column = [i[coordinate[1]] for i in field]
     row = field[coordinate[0]]
     slash = find_slash(field, winsize, coordinate)
@@ -25,18 +25,18 @@ def next_step(field, winsize, step_count, player, coordinate=()):
         play(field, winsize, step_count=step_count + 1)
 
 
-def print_win(filed, player, step_count):
+def print_win(filed: list, player: str, step_count: int):
     print_field(filed)
     print("Congratulation!")
-    print(f"Player {player} WIN on step {step_count}")
+    print(f"Player '{player}' WIN on step {step_count}")
 
 
-def print_standoff(field):
+def print_standoff(field: list):
     print_field(field)
     print("All wins!")
 
 
-def find_slash(field, winsize, coordinate, back=False):
+def find_slash(field: list, winsize: int, coordinate: tuple, back=False) -> list:
     y, x = coordinate
     line = []
     c = 0
@@ -62,25 +62,24 @@ def find_slash(field, winsize, coordinate, back=False):
     return line
 
 
-def check_line(test_line, line):
-    print(f"Check line: {line}")
+def check_line(test_line: str, line: list) -> bool:
     return test_line in ''.join(map(str, line))
 
 
-def print_state(field, step_count):
+def print_state(field: list, step_count: int):
     print("=" * 10)
     print(f"Step: {step_count}")
     print_field(field)
 
 
-def print_field(f):
+def print_field(f: list):
     n = len(f[0])
     print("  {}".format(' '.join(str(x) for x in range(n))))
     for i, raw in enumerate(f):
         print(f"{i} {' '.join(f[i])}")
 
 
-def get_step(player, field):
+def get_step(player: str, field: list):
     field_size = len(field)
     coord_column = input(f"Select next step for '{player}' column: ")
     coord_row = input(f"Select next step for '{player}' row: ")
@@ -92,7 +91,7 @@ def get_step(player, field):
         return get_step(player, field)
 
     if 0 <= coord_column <= field_size and 0 <= coord_row <= field_size:
-        return coord_column, coord_row
+        return coord_row, coord_column
     else:
         print(f"Coordinate must be in 0 - {field_size}")
 
@@ -101,7 +100,12 @@ def get_step(player, field):
     return get_step(player, field)
 
 
-def init_field():
+def init_field() -> tuple:
+    """
+    Initial playground
+
+    :return: tuple: field list and line size for win
+    """
     n = get_field_size()
     return [['-'] * n for _ in range(n)], get_win_size(n)
 
@@ -119,7 +123,7 @@ def get_field_size() -> int:
     return n
 
 
-def get_win_size(n):
+def get_win_size(n) -> int:
     win = input(f"Select win size from 3 to {n}: ")
     try:
         win = int(win)
